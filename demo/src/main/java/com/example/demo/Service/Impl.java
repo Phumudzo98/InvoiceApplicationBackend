@@ -19,23 +19,30 @@ public class Impl implements Interface {
 
     //Initialize/Declare variables/repository
     //repo
+    @Autowired
     private UserRepository userRepo;
+    @Autowired
     private BusinessInfoRepository businessRepo;
+    @Autowired
     private InvoiceRepository invoiceRepo;
+    @Autowired
     private ItemsRepository itemRepo;
+    @Autowired
     private QuoteRepository quoteRepo;
+    @Autowired
     private ClientRepository clientRepo;
+    @Autowired
     private ClientAddressRepository clientAddressRepo;
+    @Autowired
     private MailSender mailSender;
 
     @Override
-    @Autowired
     @Transactional
     public boolean registerUser(User user)
     {
         Optional<User> check = userRepo.findById(user.getEmail());
 
-        if(check==null)
+        if(check.isEmpty())
         {
             userRepo.save(user);
 
@@ -51,7 +58,7 @@ public class Impl implements Interface {
         return false;
     }
 
-    @Autowired
+
     @Override
     public boolean loginApp(String email, String password) {
         User user = userRepo.findByEmailAndPassword(email, password);
@@ -59,7 +66,7 @@ public class Impl implements Interface {
         return user.getEmail().equals(email) && user.getPassword().equals(password);
     }
 
-    @Autowired
+
     @Override
     public boolean deleteInvoice(int id) {
 

@@ -7,6 +7,7 @@ import com.example.demo.Model.Quote;
 import com.example.demo.Model.User;
 import com.example.demo.Service.Interface;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,10 +15,11 @@ import java.util.List;
 
 @RestController
 
-public class Control {
+public class Control implements ErrorController {
 
     @Autowired
     private Interface appService;
+
 
     @GetMapping("/name")
     public String getName()
@@ -27,8 +29,6 @@ public class Control {
     @PostMapping("/register")
     public ResponseEntity<Boolean> register(@RequestBody User user)
     {
-
-
         return ResponseEntity.ok(true);
     }
 
