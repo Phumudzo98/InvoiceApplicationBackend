@@ -44,12 +44,14 @@ public class Impl implements Interface {
 
         if(check.isEmpty())
         {
+            user.setEmail(user.getEmail());
             userRepo.save(user);
 
             SimpleMailMessage message = new SimpleMailMessage();
             message.setSubject("Registration activation link");
             message.setText("Here is your link: ");
             message.setFrom("phumu98@gmail.com");
+            message.setTo("phumu98@gmail.com");
 
             mailSender.send(message);
 
@@ -62,7 +64,10 @@ public class Impl implements Interface {
     @Override
     public boolean loginApp(String email, String password) {
         User user = userRepo.findByEmailAndPassword(email, password);
-
+        if(user==null)
+        {
+            return false;
+        }
         return user.getEmail().equals(email) && user.getPassword().equals(password);
     }
 
@@ -114,6 +119,7 @@ public class Impl implements Interface {
     }
 
     @Override
+    @Transactional
     public boolean createInvoiceOrQuote(ClientAddressInvoiceQuoteItems caiqi) {
         //Desmond
 

@@ -1,7 +1,6 @@
 package com.example.demo.Model;
 
 import jakarta.persistence.*;
-
 import java.io.Serializable;
 import java.util.List;
 
@@ -9,8 +8,8 @@ import java.util.List;
 @Entity
 public class User implements Serializable {
 
-
     @Id
+    @Column(unique = true, nullable = false)
     private String email;
     private String password;
     private String f_name;
@@ -33,11 +32,16 @@ public class User implements Serializable {
         this.l_name = l_name;
         this.businessInfo = businessInfo;
         this.client = client;
+
     }
 
     public String getEmail() {
         return email;
     }
+
+
+
+
 
     public void setEmail(String email) {
         this.email = email;

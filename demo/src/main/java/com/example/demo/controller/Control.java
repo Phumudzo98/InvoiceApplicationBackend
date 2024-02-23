@@ -29,7 +29,13 @@ public class Control implements ErrorController {
     @PostMapping("/register")
     public ResponseEntity<Boolean> register(@RequestBody User user)
     {
-        return ResponseEntity.ok(true);
+        boolean result = appService.registerUser(user);
+
+        if(result)
+        {
+            return ResponseEntity.ok(true);
+        }
+        return ResponseEntity.badRequest().body(false);
     }
 
     @PostMapping("/login")
@@ -89,6 +95,23 @@ public class Control implements ErrorController {
         }
     }
 
+    @GetMapping("/homeInvoices")
+    public ResponseEntity<List<Invoice>> display5InvoicesHome()
+    {
+        List<Invoice> invoices = appService.homeTop5Invoice();
+
+        if(invoices!=null)
+        {
+            return ResponseEntity.ok(invoices);
+        }
+        else
+        {
+            return ResponseEntity.ok(null);
+        }
+    }
+
+
+
     @GetMapping("/displayAllInvoices")
     public ResponseEntity<List<Invoice>> getAllInvoice()
     {
@@ -102,6 +125,13 @@ public class Control implements ErrorController {
             return ResponseEntity.ok(null);
         }
     }
+
+//    @PostMapping("/updateProfile")
+//    public ResponseEntity<Boolean> updateProfile(User user)
+//    {
+//        boolean result = appService.updateUserDetails(user);
+//
+//    }
 
 
 
