@@ -11,7 +11,6 @@ public class Client implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
-
     private String f_name;
     private String l_name;
     private String email;

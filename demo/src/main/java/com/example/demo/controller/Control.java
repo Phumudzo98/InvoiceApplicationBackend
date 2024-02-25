@@ -8,6 +8,7 @@ import com.example.demo.Model.User;
 import com.example.demo.Service.Interface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.error.ErrorController;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,12 +21,9 @@ public class Control implements ErrorController {
     @Autowired
     private Interface appService;
 
+    private String email="phumu98@gmail.com";
 
-    @GetMapping("/name")
-    public String getName()
-    {
-        return "Phumudzo";
-    }
+
     @PostMapping("/register")
     public ResponseEntity<Boolean> register(@RequestBody User user)
     {
@@ -55,7 +53,7 @@ public class Control implements ErrorController {
     @PostMapping("/createInvoiceOrQuote")
     public ResponseEntity<Boolean> createInvoiceOrQuote(@RequestBody ClientAddressInvoiceQuoteItems caiqi)
     {
-        boolean check = appService.createInvoiceOrQuote(caiqi);
+        boolean check = appService.createInvoiceOrQuote(email,caiqi);
         if(check)
         {
             return ResponseEntity.ok(true);
@@ -68,7 +66,7 @@ public class Control implements ErrorController {
     @DeleteMapping("/searchInvoice")
     public ResponseEntity<Invoice> searchInvoice(@RequestParam int id)
     {
-        Invoice invoice = appService.searchInvoice(id);
+        Invoice invoice = appService.searchInvoice(id,email);
 
                 if(invoice!=null)
                 {
@@ -83,7 +81,7 @@ public class Control implements ErrorController {
     @GetMapping("/homeQuotes")
     public ResponseEntity<List<Quote>> display5QuoteOnHome()
     {
-        List<Quote> quotes = appService.homeTop5Quote();
+        List<Quote> quotes = appService.homeTop5Quote(email);
 
         if(quotes!=null)
         {
@@ -98,7 +96,7 @@ public class Control implements ErrorController {
     @GetMapping("/homeInvoices")
     public ResponseEntity<List<Invoice>> display5InvoicesHome()
     {
-        List<Invoice> invoices = appService.homeTop5Invoice();
+        List<Invoice> invoices = appService.homeTop5Invoice(email);
 
         if(invoices!=null)
         {
@@ -115,7 +113,7 @@ public class Control implements ErrorController {
     @GetMapping("/displayAllInvoices")
     public ResponseEntity<List<Invoice>> getAllInvoice()
     {
-        List<Invoice> allInvoice = appService.getAllInvoices();
+        List<Invoice> allInvoice = appService.getAllInvoices(email);
 
         if(allInvoice!=null)
         {
@@ -124,6 +122,19 @@ public class Control implements ErrorController {
         else {
             return ResponseEntity.ok(null);
         }
+    }
+
+    @GetMapping("/forgotPassword")
+    public ResponseEntity<Boolean> forgotPassword(@RequestParam String email)
+    {
+        boolean result = appService.forgotPassword(email);
+
+        if(result)
+        {
+            return ResponseEntity.ok(true);
+        }
+
+        return ResponseEntity.badRequest().body(false);
     }
 
 //    @PostMapping("/updateProfile")

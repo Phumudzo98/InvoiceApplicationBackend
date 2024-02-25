@@ -14,8 +14,21 @@ public class Quote implements Serializable {
     private int id;
     private double totalAmount;
     private LocalDate date;
+
+    public Client getClient() {
+        return client;
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
+    }
+
     @OneToMany(mappedBy = "quote", cascade = CascadeType.ALL)
     private List<Items> items;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name="client_id")
+    private Client client;
 
     public Quote() {
     }

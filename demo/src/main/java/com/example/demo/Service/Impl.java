@@ -71,9 +71,30 @@ public class Impl implements Interface {
         return user.getEmail().equals(email) && user.getPassword().equals(password);
     }
 
+    @Override
+    public boolean forgotPassword(String email) {
+        User checkEmail = userRepo.findByEmail(email);
+
+        if(checkEmail==null)
+        {
+            return false;
+        }
+
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setSubject("Forgot password");
+        message.setText("Dear "+checkEmail.getF_name()+" "+checkEmail.getL_name()+"\n\nHere is your link: ");
+        message.setFrom("phumu98@gmail.com");
+        message.setTo(email);
+
+        mailSender.send(message);
+
+        return true;
+
+    }
+
 
     @Override
-    public boolean deleteInvoice(int id) {
+    public boolean deleteInvoice(int id, String email) {
 
         if(invoiceRepo.existsById(id))
         {
@@ -84,7 +105,7 @@ public class Impl implements Interface {
     }
 
     @Override
-    public Invoice searchInvoice(int id) {
+    public Invoice searchInvoice(int id, String email) {
         try
         {
             if(invoiceRepo.existsById(id))
@@ -100,27 +121,30 @@ public class Impl implements Interface {
     }
 
     @Override
-    public List<Invoice> homeTop5Invoice() {
+    public List<Invoice> homeTop5Invoice(String email) {
+
+//
 
         if(invoiceRepo.findAll().isEmpty())
         {
             return Collections.emptyList();
         }
-        return invoiceRepo.findTop5ByOrderByDateDesc();
+
+        return invoiceRepo.findTop5InvoicesByUserEmailOrderByDateDesc(email);
     }
 
     @Override
-    public List<Quote> homeTop5Quote() {
+    public List<Quote> homeTop5Quote(String email) {
         if(quoteRepo.findAll().isEmpty())
         {
             return Collections.emptyList();
         }
-        return quoteRepo.findTop5ByOrderByDateDesc();
+        return quoteRepo.findTop5QuotesByUserEmailOrderByDateDesc(email);
     }
 
     @Override
     @Transactional
-    public boolean createInvoiceOrQuote(ClientAddressInvoiceQuoteItems caiqi) {
+    public boolean createInvoiceOrQuote(String email, ClientAddressInvoiceQuoteItems caiqi) {
         //Desmond
 
         Client client = caiqi.getClient();
@@ -159,11 +183,11 @@ public class Impl implements Interface {
     }
 
     @Override
-    public List<Invoice> getAllInvoices() {
+    public List<Invoice> getAllInvoices(String email) {
 
         try
         {
-            return invoiceRepo.findAll();
+            return invoiceRepo.getAllInvoices(email);
         }
         catch (Exception e)
         {
@@ -174,7 +198,7 @@ public class Impl implements Interface {
     @Override
     public boolean updateUserDetails(User user) {
 
-        Optional<?> updateUser = userRepo.findByEmail(user.getEmail());
+        User updateUser = userRepo.findByEmail(user.getEmail());
         return false;
     }
 

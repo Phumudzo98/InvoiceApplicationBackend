@@ -11,12 +11,13 @@ public interface Interface {
 
     public boolean registerUser(User user);
     public boolean loginApp(String email, String password);
-    public boolean deleteInvoice(int id);
-    public Invoice searchInvoice(int id);
-    public List<Invoice> homeTop5Invoice();
-    public List<Quote> homeTop5Quote();
-    public boolean createInvoiceOrQuote(ClientAddressInvoiceQuoteItems caiqi);
-    public List<Invoice> getAllInvoices();
+    public boolean forgotPassword(String email);
+    public boolean deleteInvoice(int id, String email);
+    public Invoice searchInvoice(int id, String email);
+    public List<Invoice> homeTop5Invoice(String email);
+    public List<Quote> homeTop5Quote(String email);
+    public boolean createInvoiceOrQuote(String email, ClientAddressInvoiceQuoteItems caiqi);
+    public List<Invoice> getAllInvoices(String email);
     public boolean updateUserDetails(User user);
 
 }
