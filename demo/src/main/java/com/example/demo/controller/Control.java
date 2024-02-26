@@ -124,6 +124,21 @@ public class Control implements ErrorController {
         }
     }
 
+
+    @GetMapping("/displayAllQuotes")
+    public ResponseEntity<List<Quote>> getAllQuotes()
+    {
+        List<Quote> allQuote = appService.getAllQuote(email);
+
+        if(allQuote!=null)
+        {
+            return ResponseEntity.ok(allQuote);
+        }
+        else {
+            return ResponseEntity.ok(null);
+        }
+    }
+
     @GetMapping("/forgotPassword")
     public ResponseEntity<Boolean> forgotPassword(@RequestParam String email)
     {
