@@ -161,23 +161,40 @@ public class Impl implements Interface {
         clientRepo.save(client);
 
 
+        if(caiqi.getType().equals("Invoice")) {
+            Invoice invoice = caiqi.getInvoice();
 
-        Invoice invoice = caiqi.getInvoice();
+            invoice.setClient(client);
+            invoice.setDate(LocalDate.now());
 
-        invoice.setClient(client);
-        invoice.setDate(LocalDate.now());
+            List<Items> items = caiqi.getItems();
 
-        List<Items> items=caiqi.getItems();
+            invoiceRepo.save(invoice);
 
-        invoiceRepo.save(invoice);
-
-        for(Items item: items)
-        {
-            item.setInvoice(invoice);
-            itemRepo.save(item);
+            for (Items item : items) {
+                item.setInvoice(invoice);
+                itemRepo.save(item);
+            }
+            return true;
         }
+        else if (caiqi.getType().equals("Quote"))
+        {
+            Quote quote = caiqi.getQuote();
 
-        return true;
+            quote.setClient(client);
+            quote.setDate(LocalDate.now());
+
+            List<Items> items = caiqi.getItems();
+
+            quoteRepo.save(quote);
+
+            for (Items item : items) {
+                item.setQuote(quote);
+                itemRepo.save(item);
+            }
+            return true;
+        }
+        return false;
     }
 
     @Override

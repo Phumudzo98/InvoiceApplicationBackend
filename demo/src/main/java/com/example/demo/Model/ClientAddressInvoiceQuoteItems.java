@@ -7,22 +7,31 @@ public class ClientAddressInvoiceQuoteItems {
     private Client client;
     private ClientAddress clientAddress;
     private Invoice invoice;
+    private String type;
     private List<Items> items;
-    //private Quote quote;
+    private Quote quote;
 
     public ClientAddressInvoiceQuoteItems() {
     }
 
-    public ClientAddressInvoiceQuoteItems(Client client, ClientAddress clientAddress, Invoice invoice, List<Items> items, Quote quote) {
+    public ClientAddressInvoiceQuoteItems(Client client, ClientAddress clientAddress, Invoice invoice, String type, List<Items> items) {
         this.client = client;
         this.clientAddress = clientAddress;
         this.invoice = invoice;
+        this.type = type;
         this.items = items;
-        //this.quote = quote;
     }
 
     public Client getClient() {
         return client;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public void setClient(Client client) {
@@ -53,11 +62,11 @@ public class ClientAddressInvoiceQuoteItems {
         this.items = items;
     }
 //
-//    public Quote getQuote() {
-//        return quote;
-//    }
+    public Quote getQuote() {
+        return quote;
+    }
 //
-//    public void setQuote(Quote quote) {
-//        this.quote = quote;
-//    }
+    public void setQuote(Quote quote) {
+        this.quote = quote;
+    }
 }

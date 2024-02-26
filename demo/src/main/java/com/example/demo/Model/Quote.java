@@ -15,13 +15,6 @@ public class Quote implements Serializable {
     private double totalAmount;
     private LocalDate date;
 
-    public Client getClient() {
-        return client;
-    }
-
-    public void setClient(Client client) {
-        this.client = client;
-    }
 
     @OneToMany(mappedBy = "quote", cascade = CascadeType.ALL)
     private List<Items> items;
@@ -33,17 +26,24 @@ public class Quote implements Serializable {
     public Quote() {
     }
 
-    public Quote(int id, double totalAmount, LocalDate date, List<Items> items) {
+    public Quote(int id, double totalAmount, LocalDate date, List<Items> items, Client client) {
         this.id = id;
         this.totalAmount = totalAmount;
         this.date = date;
         this.items = items;
+        this.client = client;
     }
 
     public int getId() {
         return id;
     }
+    public void setClient(Client client) {
+        this.client = client;
+    }
 
+    public Client getClient() {
+        return client;
+    }
     public void setId(int id) {
         this.id = id;
     }
