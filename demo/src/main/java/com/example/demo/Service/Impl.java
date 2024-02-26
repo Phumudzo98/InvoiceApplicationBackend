@@ -9,7 +9,9 @@ import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -130,7 +132,7 @@ public class Impl implements Interface {
             return Collections.emptyList();
         }
 
-        return invoiceRepo.findTop5InvoicesByUserEmailOrderByDateDesc(email);
+        return invoiceRepo.findAll();
     }
 
     @Override
@@ -139,47 +141,43 @@ public class Impl implements Interface {
         {
             return Collections.emptyList();
         }
-        return quoteRepo.findTop5QuotesByUserEmailOrderByDateDesc(email);
+        return quoteRepo.findAll();
     }
 
     @Override
     @Transactional
     public boolean createInvoiceOrQuote(String email, ClientAddressInvoiceQuoteItems caiqi) {
         //Desmond
+        User user = userRepo.findByEmail(email);
 
         Client client = caiqi.getClient();
+        client.setUser(user);
+
         ClientAddress clientAddress = caiqi.getClientAddress();
+        clientAddressRepo.save(clientAddress);
+
+        client.setClientAddress(clientAddress);
+
+        clientRepo.save(client);
+
+
+
         Invoice invoice = caiqi.getInvoice();
-        List<Items> items = caiqi.getItems();
-        Quote quote =caiqi.getQuote();
 
-        if(invoice==null)
+        invoice.setClient(client);
+        invoice.setDate(LocalDate.now());
+
+        List<Items> items=caiqi.getItems();
+
+        invoiceRepo.save(invoice);
+
+        for(Items item: items)
         {
-            clientRepo.save(client);
-            clientAddressRepo.save(clientAddress);
-            quoteRepo.save(quote);
-
-            for(Items item: quote.getItems())
-            {
-                item.setQuote(quote);
-                itemRepo.save(item);
-            }
-            return true;
-
-        } else if (quote==null) {
-            clientRepo.save(client);
-            clientAddressRepo.save(clientAddress);
-            invoiceRepo.save(invoice);
-
-            for(Items item: invoice.getItems())
-            {
-                item.setInvoice(invoice);
-                itemRepo.save(item);
-            }
-            return true;
-
+            item.setInvoice(invoice);
+            itemRepo.save(item);
         }
-        return false;
+
+        return true;
     }
 
     @Override
@@ -187,7 +185,19 @@ public class Impl implements Interface {
 
         try
         {
-            return invoiceRepo.getAllInvoices(email);
+            return invoiceRepo.findAll();
+        }
+        catch (Exception e)
+        {
+            return Collections.emptyList();
+        }
+    }
+
+    public List<Quote> getAllQuote(String email)
+    {
+        try
+        {
+            return quoteRepo.findAll();
         }
         catch (Exception e)
         {

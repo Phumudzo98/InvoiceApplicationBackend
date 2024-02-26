@@ -8,7 +8,7 @@ public class ClientAddressInvoiceQuoteItems {
     private ClientAddress clientAddress;
     private Invoice invoice;
     private List<Items> items;
-    private Quote quote;
+    //private Quote quote;
 
     public ClientAddressInvoiceQuoteItems() {
     }
@@ -18,7 +18,7 @@ public class ClientAddressInvoiceQuoteItems {
         this.clientAddress = clientAddress;
         this.invoice = invoice;
         this.items = items;
-        this.quote = quote;
+        //this.quote = quote;
     }
 
     public Client getClient() {
@@ -38,9 +38,9 @@ public class ClientAddressInvoiceQuoteItems {
     }
 
     public Invoice getInvoice() {
-        return invoice;
+      return invoice;
     }
-
+//
     public void setInvoice(Invoice invoice) {
         this.invoice = invoice;
     }
@@ -48,16 +48,16 @@ public class ClientAddressInvoiceQuoteItems {
     public List<Items> getItems() {
         return items;
     }
-
+//
     public void setItems(List<Items> items) {
         this.items = items;
     }
-
-    public Quote getQuote() {
-        return quote;
-    }
-
-    public void setQuote(Quote quote) {
-        this.quote = quote;
-    }
+//
+//    public Quote getQuote() {
+//        return quote;
+//    }
+//
+//    public void setQuote(Quote quote) {
+//        this.quote = quote;
+//    }
 }

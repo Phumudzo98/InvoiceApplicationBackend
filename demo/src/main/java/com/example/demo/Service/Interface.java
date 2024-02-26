@@ -19,5 +19,6 @@ public interface Interface {
     public boolean createInvoiceOrQuote(String email, ClientAddressInvoiceQuoteItems caiqi);
     public List<Invoice> getAllInvoices(String email);
     public boolean updateUserDetails(User user);
+    public List<Quote> getAllQuote(String email);
 
 }
