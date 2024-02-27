@@ -210,15 +210,19 @@ public class Impl implements Interface {
     @Override
     public List<Invoice> getAllInvoices(String email) {
 
+        User user = userRepo.findByEmail(email);
+
         try
         {
-            return invoiceRepo.findAll();
+            return invoiceRepo.findByUser(user);
         }
         catch (Exception e)
         {
             return Collections.emptyList();
         }
     }
+
+
 
     public List<Quote> getAllQuote(String email)
     {
@@ -242,7 +246,6 @@ public class Impl implements Interface {
             updateUser.setPassword(user.getPassword());
             updateUser.setF_name(user.getF_name());
             updateUser.setL_name(user.getL_name());
-
 
             userRepo.save(updateUser);
 

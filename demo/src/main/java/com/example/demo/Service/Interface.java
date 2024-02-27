@@ -21,4 +21,6 @@ public interface Interface {
     public boolean updateUserDetails(User user);
     public List<Quote> getAllQuote(String email);
 
+
+
 }

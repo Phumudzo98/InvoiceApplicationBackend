@@ -152,11 +152,17 @@ public class Control implements ErrorController {
         return ResponseEntity.badRequest().body(false);
     }
 
- //  @PostMapping("/updateProfile")
-  //  public ResponseEntity<Boolean> updateProfile(User user)    {
- //       boolean result = appService.updateUserDetails(user);
+   @PostMapping("/updateProfile")
+    public ResponseEntity<Boolean> updateProfile(User user)    {
+        boolean result = appService.updateUserDetails(user);
 
-//    }
+        if(result)
+        {
+            return ResponseEntity.ok(true);
+        }
+
+        return ResponseEntity.badRequest().body(false);
+    }
 
 
 
