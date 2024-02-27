@@ -19,31 +19,25 @@ public class Quote implements Serializable {
     @OneToMany(mappedBy = "quote", cascade = CascadeType.ALL)
     private List<Items> items;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name="client_id")
-    private Client client;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
     public Quote() {
     }
 
-    public Quote(int id, double totalAmount, LocalDate date, List<Items> items, Client client) {
+    public Quote(int id, double totalAmount, LocalDate date, List<Items> items, User user) {
         this.id = id;
         this.totalAmount = totalAmount;
         this.date = date;
         this.items = items;
-        this.client = client;
+        this.user = user;
     }
 
     public int getId() {
         return id;
     }
-    public void setClient(Client client) {
-        this.client = client;
-    }
 
-    public Client getClient() {
-        return client;
-    }
     public void setId(int id) {
         this.id = id;
     }
@@ -70,5 +64,13 @@ public class Quote implements Serializable {
 
     public void setItems(List<Items> items) {
         this.items = items;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

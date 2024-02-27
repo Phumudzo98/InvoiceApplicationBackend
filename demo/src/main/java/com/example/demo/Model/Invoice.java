@@ -19,26 +19,19 @@ public class Invoice implements Serializable {
     @OneToMany(mappedBy = "invoice", cascade = CascadeType.ALL)
     private List<Items> Items;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name="client_id")
-    private Client client;
-
-    public Client getClient() {
-        return client;
-    }
-
-    public void setClient(Client client) {
-        this.client = client;
-    }
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
     public Invoice() {
     }
 
-    public Invoice(int invoiceId, double totalAmount, LocalDate date, List<Items> items) {
+    public Invoice(int invoiceId, double totalAmount, LocalDate date, List<com.example.demo.Model.Items> items, User user) {
         this.invoiceId = invoiceId;
         this.totalAmount = totalAmount;
         this.date = date;
         Items = items;
+        this.user = user;
     }
 
     public int getInvoiceId() {
@@ -65,11 +58,19 @@ public class Invoice implements Serializable {
         this.date = date;
     }
 
-    public List<Items> getItems() {
+    public List<com.example.demo.Model.Items> getItems() {
         return Items;
     }
 
-    public void setItems(List<Items> items) {
+    public void setItems(List<com.example.demo.Model.Items> items) {
         Items = items;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

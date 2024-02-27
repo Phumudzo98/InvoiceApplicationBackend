@@ -22,26 +22,30 @@ public class User implements Serializable {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Client> client;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Invoice> invoices;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Quote> quotes;
+
+
     public User() {
     }
 
-    public User(String email, String password, String f_name, String l_name, BusinessInfo businessInfo, List<Client> client) {
+    public User(String email, String password, String f_name, String l_name, BusinessInfo businessInfo, List<Client> client, List<Invoice> invoices, List<Quote> quotes) {
         this.email = email;
         this.password = password;
         this.f_name = f_name;
         this.l_name = l_name;
         this.businessInfo = businessInfo;
         this.client = client;
-
+        this.invoices = invoices;
+        this.quotes = quotes;
     }
 
     public String getEmail() {
         return email;
     }
-
-
-
-
 
     public void setEmail(String email) {
         this.email = email;
@@ -85,5 +89,21 @@ public class User implements Serializable {
 
     public void setClient(List<Client> client) {
         this.client = client;
+    }
+
+    public List<Invoice> getInvoices() {
+        return invoices;
+    }
+
+    public void setInvoices(List<Invoice> invoices) {
+        this.invoices = invoices;
+    }
+
+    public List<Quote> getQuotes() {
+        return quotes;
+    }
+
+    public void setQuotes(List<Quote> quotes) {
+        this.quotes = quotes;
     }
 }

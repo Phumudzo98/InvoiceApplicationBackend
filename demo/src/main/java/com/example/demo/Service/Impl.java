@@ -51,9 +51,9 @@ public class Impl implements Interface {
 
             SimpleMailMessage message = new SimpleMailMessage();
             message.setSubject("Registration activation link");
-            message.setText("Here is your link: ");
+            message.setText("Hello "+user.getF_name()+". \n\nHere is your link: ");
             message.setFrom("phumu98@gmail.com");
-            message.setTo("phumu98@gmail.com");
+            message.setTo(user.getEmail());
 
             mailSender.send(message);
 
@@ -149,7 +149,7 @@ public class Impl implements Interface {
     public boolean createInvoiceOrQuote(String email, ClientAddressInvoiceQuoteItems caiqi) {
         //Desmond
         User user = userRepo.findByEmail(email);
-
+        double total=0;
         Client client = caiqi.getClient();
         client.setUser(user);
 
@@ -164,11 +164,16 @@ public class Impl implements Interface {
         if(caiqi.getType().equals("Invoice")) {
             Invoice invoice = caiqi.getInvoice();
 
-            invoice.setClient(client);
+            invoice.setUser(user);
             invoice.setDate(LocalDate.now());
 
             List<Items> items = caiqi.getItems();
+            for (Items item : items) {
+                item.setInvoice(invoice);
+                total=total+(item.getPrice()*item.getQty());
+            }
 
+            invoice.setTotalAmount(total);
             invoiceRepo.save(invoice);
 
             for (Items item : items) {
@@ -181,11 +186,16 @@ public class Impl implements Interface {
         {
             Quote quote = caiqi.getQuote();
 
-            quote.setClient(client);
+            quote.setUser(user);
             quote.setDate(LocalDate.now());
 
             List<Items> items = caiqi.getItems();
+            for (Items item : items) {
+                item.setQuote(quote);
+                total=total+(item.getPrice()*item.getQty());
+            }
 
+            quote.setTotalAmount(total);
             quoteRepo.save(quote);
 
             for (Items item : items) {
@@ -226,6 +236,18 @@ public class Impl implements Interface {
     public boolean updateUserDetails(User user) {
 
         User updateUser = userRepo.findByEmail(user.getEmail());
+
+        if(updateUser!=null)
+        {
+            updateUser.setPassword(user.getPassword());
+            updateUser.setF_name(user.getF_name());
+            updateUser.setL_name(user.getL_name());
+
+
+            userRepo.save(updateUser);
+
+            return true;
+        }
         return false;
     }
 
