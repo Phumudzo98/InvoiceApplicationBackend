@@ -12,7 +12,6 @@ public class BusinessInfo implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
-
     private String companyName;
     private String streetNo;
     private String streetName;

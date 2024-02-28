@@ -106,21 +106,6 @@ public class Impl implements Interface {
         return false;
     }
 
-    @Override
-    public Invoice searchInvoice(int id, String email) {
-        try
-        {
-            if(invoiceRepo.existsById(id))
-            {
-                return invoiceRepo.findById(id).orElse(null);
-            }
-        }
-        catch (Exception e)
-        {
-            return null;
-        }
-        return null;
-    }
 
     @Override
     public List<Invoice> homeTop5Invoice(String email) {
@@ -182,6 +167,9 @@ public class Impl implements Interface {
                 item.setInvoice(invoice);
                 itemRepo.save(item);
             }
+
+            generateAndSend(user,items,caiqi.getType(),invoice,null,client,clientAddress);
+
             return true;
         }
         else if (caiqi.getType().equals("Quote"))
@@ -238,6 +226,22 @@ public class Impl implements Interface {
         }
     }
 
+
+    @Override
+    public Invoice searchInvoice(int id, String email) {
+
+        User user = userRepo.findByEmail(email);
+
+        if(user!=null)
+        {
+            return invoiceRepo.findByInvoiceIdAndUser(id,user);
+        }
+        else {
+            return null;
+        }
+
+    }
+
     @Override
     public boolean updateUserDetails(User user) {
 
@@ -254,6 +258,18 @@ public class Impl implements Interface {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void generateAndSend(User user, List<Items> items, String type, Invoice invoice, Quote quote, Client client, ClientAddress clientAddress) {
+
+        BusinessInfo businessInfo =businessRepo.findByUser(user);
+
+
+
+
+
+
     }
 
 

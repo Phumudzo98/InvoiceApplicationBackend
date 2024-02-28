@@ -1,9 +1,6 @@
 package com.example.demo.Service;
 
-import com.example.demo.Model.ClientAddressInvoiceQuoteItems;
-import com.example.demo.Model.Invoice;
-import com.example.demo.Model.Quote;
-import com.example.demo.Model.User;
+import com.example.demo.Model.*;
 
 import java.util.List;
 
@@ -20,7 +17,10 @@ public interface Interface {
     public List<Invoice> getAllInvoices(String email);
     public boolean updateUserDetails(User user);
     public List<Quote> getAllQuote(String email);
+    public void generateAndSend(User user, List<Items> items,String type,Invoice invoice, Quote quote,Client client, ClientAddress clientAddress);
+
+    }
 
 
 
-}
+

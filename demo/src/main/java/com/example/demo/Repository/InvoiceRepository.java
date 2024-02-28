@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface InvoiceRepository extends JpaRepository<Invoice, Integer> {
 
@@ -14,6 +15,8 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Integer> {
     List<Invoice> findByUserEmail(String userEmail);
 
     List<Invoice> findTop5ByUserOrderByDateDesc(User user);
+
+    Invoice findByInvoiceIdAndUser(int invoiceId, User user);
 
 
 }

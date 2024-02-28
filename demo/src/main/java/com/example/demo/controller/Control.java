@@ -64,7 +64,7 @@ public class Control implements ErrorController {
         }
 
     }
-    @DeleteMapping("/searchInvoice")
+    @GetMapping("/searchInvoice")
     public ResponseEntity<Invoice> searchInvoice(@RequestParam int id)
     {
         Invoice invoice = appService.searchInvoice(id,email);
