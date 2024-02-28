@@ -1,5 +1,7 @@
 package com.example.demo.Model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
@@ -20,18 +22,20 @@ public class BusinessInfo implements Serializable {
 
     @OneToOne(fetch =FetchType.LAZY)
     @JoinColumn(name = "user_id")
+    @JsonIgnore
     private User user;
     public BusinessInfo() {
     }
 
-    public BusinessInfo(String companyName, String streetNo, String streetName, String town, String city, int postalCode) {
-
+    public BusinessInfo(int id, String companyName, String streetNo, String streetName, String town, String city, int postalCode, User user) {
+        this.id = id;
         this.companyName = companyName;
         this.streetNo = streetNo;
         this.streetName = streetName;
         this.town = town;
         City = city;
         this.postalCode = postalCode;
+        this.user = user;
     }
 
     public int getId() {
@@ -88,5 +92,14 @@ public class BusinessInfo implements Serializable {
 
     public void setPostalCode(int postalCode) {
         this.postalCode = postalCode;
+    }
+
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

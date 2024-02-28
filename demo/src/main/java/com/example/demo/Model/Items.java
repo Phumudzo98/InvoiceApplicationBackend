@@ -1,6 +1,10 @@
 package com.example.demo.Model;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
@@ -17,10 +21,12 @@ public class Items implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "invoice_id")
+    @JsonIgnore
     private Invoice invoice;
 
     @ManyToOne
     @JoinColumn(name = "quote_id")
+    @JsonIgnore
     private Quote quote;
 
     public Items() {
@@ -67,6 +73,7 @@ public class Items implements Serializable {
         this.price = price;
     }
 
+
     public Invoice getInvoice() {
         return invoice;
     }
@@ -74,6 +81,7 @@ public class Items implements Serializable {
     public void setInvoice(Invoice invoice) {
         this.invoice = invoice;
     }
+
 
     public Quote getQuote() {
         return quote;

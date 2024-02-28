@@ -1,14 +1,22 @@
 package com.example.demo.Model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import java.io.Serializable;
 import java.util.List;
 
-public class ClientAddressInvoiceQuoteItems {
+
+public class ClientAddressInvoiceQuoteItems implements Serializable {
 
     private Client client;
     private ClientAddress clientAddress;
+
     private Invoice invoice;
     private String type;
     private List<Items> items;
+
     private Quote quote;
 
     public ClientAddressInvoiceQuoteItems() {

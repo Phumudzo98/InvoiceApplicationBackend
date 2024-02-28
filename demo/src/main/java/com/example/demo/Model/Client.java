@@ -1,6 +1,9 @@
 package com.example.demo.Model;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
@@ -16,11 +19,13 @@ public class Client implements Serializable {
     private String email;
     private String phoneNo;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
+    @JsonIgnore
     private User user;
 
     @OneToOne
+    @JsonIgnore
     private ClientAddress clientAddress;
 
     public Client() {
@@ -83,6 +88,7 @@ public class Client implements Serializable {
     public void setUser(User user) {
         this.user = user;
     }
+
 
     public ClientAddress getClientAddress() {
         return clientAddress;

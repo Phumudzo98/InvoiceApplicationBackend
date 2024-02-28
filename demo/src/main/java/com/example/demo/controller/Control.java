@@ -12,6 +12,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -164,6 +165,31 @@ public class Control implements ErrorController {
         return ResponseEntity.badRequest().body(false);
     }
 
+    @GetMapping("/homeTop5Quotes")
+    public ResponseEntity<List<Quote>> homeTop5Quotes()
+    {
+        List<Quote> result = appService.homeTop5Quote(email);
 
+        if(result.isEmpty())
+        {
+            return ResponseEntity.ok(result);
+        }
+
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/homeTop5Invoices")
+    public ResponseEntity<List<Invoice>> homeTop5Invoices()
+    {
+        List<Invoice> result = appService.homeTop5Invoice(email);
+
+        if(result.isEmpty())
+        {
+            return ResponseEntity.ok(result);
+        }
+
+        return ResponseEntity.ok(result);
+
+    }
 
 }

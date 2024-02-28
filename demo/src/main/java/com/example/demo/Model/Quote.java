@@ -1,5 +1,8 @@
 package com.example.demo.Model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
@@ -17,10 +20,12 @@ public class Quote implements Serializable {
 
 
     @OneToMany(mappedBy = "quote", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Items> items;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonIgnore
     private User user;
 
     public Quote() {

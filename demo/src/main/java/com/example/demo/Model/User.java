@@ -1,6 +1,7 @@
 package com.example.demo.Model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.io.Serializable;
 import java.util.List;
@@ -88,6 +89,7 @@ public class User implements Serializable {
         this.businessInfo = businessInfo;
     }
 
+
     public List<Client> getClient() {
         return client;
     }
@@ -95,6 +97,7 @@ public class User implements Serializable {
     public void setClient(List<Client> client) {
         this.client = client;
     }
+
 
     public List<Invoice> getInvoices() {
         return invoices;

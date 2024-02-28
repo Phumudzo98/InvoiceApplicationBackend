@@ -1,10 +1,9 @@
 package com.example.demo.Model;
 
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 
 @Entity
 public class ClientAddress {
@@ -17,6 +16,10 @@ public class ClientAddress {
     private String town;
     private String city;
     private int postalCode;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="client_id")
+    @JsonIgnore
     private Client client;
 
     public ClientAddress() {
@@ -76,6 +79,7 @@ public class ClientAddress {
     public void setPostalCode(int postalCode) {
         this.postalCode = postalCode;
     }
+
 
     public Client getClient() {
         return client;

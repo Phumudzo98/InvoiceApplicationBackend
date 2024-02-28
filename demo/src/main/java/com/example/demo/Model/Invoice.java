@@ -1,6 +1,10 @@
 package com.example.demo.Model;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
@@ -17,10 +21,12 @@ public class Invoice implements Serializable {
     private LocalDate date;
 
     @OneToMany(mappedBy = "invoice", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Items> Items;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonIgnore
     private User user;
 
     public Invoice() {
@@ -58,6 +64,7 @@ public class Invoice implements Serializable {
         this.date = date;
     }
 
+
     public List<com.example.demo.Model.Items> getItems() {
         return Items;
     }
@@ -65,6 +72,7 @@ public class Invoice implements Serializable {
     public void setItems(List<com.example.demo.Model.Items> items) {
         Items = items;
     }
+
 
     public User getUser() {
         return user;

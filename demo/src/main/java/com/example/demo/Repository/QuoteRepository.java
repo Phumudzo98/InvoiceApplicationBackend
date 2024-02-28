@@ -2,6 +2,7 @@ package com.example.demo.Repository;
 
 import com.example.demo.Model.Invoice;
 import com.example.demo.Model.Quote;
+import com.example.demo.Model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,5 +17,7 @@ public interface QuoteRepository extends JpaRepository<Quote, Integer> {
 //    @Query("SELECT q FROM Quote")
 //    List<Quote> getAllQuotes(@Param("email") String email);
 
+    List<Quote> findByUserEmail(String userEmail);
 
+    List<Quote> findTop5ByUserOrderByDateDesc(User user);
 }

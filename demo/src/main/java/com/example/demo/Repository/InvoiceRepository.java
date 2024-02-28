@@ -11,7 +11,9 @@ import java.util.List;
 public interface InvoiceRepository extends JpaRepository<Invoice, Integer> {
 
 
-    List<Invoice> findByUser(User user);
+    List<Invoice> findByUserEmail(String userEmail);
+
+    List<Invoice> findTop5ByUserOrderByDateDesc(User user);
 
 
 }

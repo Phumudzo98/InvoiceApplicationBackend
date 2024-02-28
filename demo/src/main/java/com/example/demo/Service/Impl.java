@@ -126,13 +126,13 @@ public class Impl implements Interface {
     public List<Invoice> homeTop5Invoice(String email) {
 
 //
-
         if(invoiceRepo.findAll().isEmpty())
         {
             return Collections.emptyList();
         }
 
-        return invoiceRepo.findAll();
+        User user = userRepo.findByEmail(email);
+        return invoiceRepo.findTop5ByUserOrderByDateDesc(user);
     }
 
     @Override
@@ -141,7 +141,9 @@ public class Impl implements Interface {
         {
             return Collections.emptyList();
         }
-        return quoteRepo.findAll();
+
+        User user = userRepo.findByEmail(email);
+        return quoteRepo.findTop5ByUserOrderByDateDesc(user);
     }
 
     @Override
@@ -210,11 +212,9 @@ public class Impl implements Interface {
     @Override
     public List<Invoice> getAllInvoices(String email) {
 
-        User user = userRepo.findByEmail(email);
-
         try
         {
-            return invoiceRepo.findByUser(user);
+            return invoiceRepo.findByUserEmail(email);
         }
         catch (Exception e)
         {
@@ -226,9 +226,11 @@ public class Impl implements Interface {
 
     public List<Quote> getAllQuote(String email)
     {
+
         try
         {
-            return quoteRepo.findAll();
+
+            return quoteRepo.findByUserEmail(email);
         }
         catch (Exception e)
         {
