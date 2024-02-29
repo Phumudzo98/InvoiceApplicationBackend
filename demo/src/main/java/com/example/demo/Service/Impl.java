@@ -4,6 +4,7 @@ package com.example.demo.Service;
 
 import com.example.demo.Model.*;
 import com.example.demo.Repository.*;
+import com.example.demo.generatePdf.generatePdf;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +42,7 @@ public class Impl implements Interface {
     @Autowired
     private MailSender mailSender;
 
-   //generateAndSendPdf gPdf = new generateAndSendPdf();
+   generatePdf gPdf = new generatePdf();
 
 
 
@@ -177,7 +178,7 @@ public class Impl implements Interface {
                 itemRepo.save(item);
             }
 
-            //gPdf.generatePdf(caiqi.getType(),invoice.getDate(),user,invoice,clientAddress);
+            gPdf.generateEmailPdf(caiqi.getType(),invoice.getDate(),user,invoice.getTotalAmount(),items,client,clientAddress);
 
             return true;
         }
