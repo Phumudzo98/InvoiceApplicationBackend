@@ -12,6 +12,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.FileNotFoundException;
 import java.util.Collections;
 import java.util.List;
 
@@ -52,8 +53,7 @@ public class Control implements ErrorController {
     }
 
     @PostMapping("/createInvoiceOrQuote")
-    public ResponseEntity<Boolean> createInvoiceOrQuote(@RequestBody ClientAddressInvoiceQuoteItems caiqi)
-    {
+    public ResponseEntity<Boolean> createInvoiceOrQuote(@RequestBody ClientAddressInvoiceQuoteItems caiqi) throws FileNotFoundException {
         boolean check = appService.createInvoiceOrQuote(email,caiqi);
         if(check)
         {

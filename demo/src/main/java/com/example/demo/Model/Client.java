@@ -24,7 +24,7 @@ public class Client implements Serializable {
     @JsonIgnore
     private User user;
 
-    @OneToOne
+    @OneToOne(mappedBy = "client", cascade = CascadeType.ALL)
     @JsonIgnore
     private ClientAddress clientAddress;
 

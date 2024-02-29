@@ -1,14 +1,17 @@
 package com.example.demo.Service;
 
 
+
 import com.example.demo.Model.*;
 import com.example.demo.Repository.*;
+import com.itextpdf.kernel.pdf.PdfWriter;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
 
+import java.io.FileNotFoundException;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.Date;
@@ -37,6 +40,12 @@ public class Impl implements Interface {
     private ClientAddressRepository clientAddressRepo;
     @Autowired
     private MailSender mailSender;
+
+   //generateAndSendPdf gPdf = new generateAndSendPdf();
+
+
+
+
 
     @Override
     @Transactional
@@ -133,7 +142,7 @@ public class Impl implements Interface {
 
     @Override
     @Transactional
-    public boolean createInvoiceOrQuote(String email, ClientAddressInvoiceQuoteItems caiqi) {
+    public boolean createInvoiceOrQuote(String email, ClientAddressInvoiceQuoteItems caiqi) throws FileNotFoundException {
         //Desmond
         User user = userRepo.findByEmail(email);
         double total=0;
@@ -168,7 +177,7 @@ public class Impl implements Interface {
                 itemRepo.save(item);
             }
 
-            generateAndSend(user,items,caiqi.getType(),invoice,null,client,clientAddress);
+            //gPdf.generatePdf(caiqi.getType(),invoice.getDate(),user,invoice,clientAddress);
 
             return true;
         }
@@ -192,6 +201,7 @@ public class Impl implements Interface {
                 item.setQuote(quote);
                 itemRepo.save(item);
             }
+            //gPdf.generatePdf(caiqi.getType(),quote.getDate(),user,quote,clientAddress);
             return true;
         }
         return false;
@@ -260,17 +270,7 @@ public class Impl implements Interface {
         return false;
     }
 
-    @Override
-    public void generateAndSend(User user, List<Items> items, String type, Invoice invoice, Quote quote, Client client, ClientAddress clientAddress) {
 
-        BusinessInfo businessInfo =businessRepo.findByUser(user);
-
-
-
-
-
-
-    }
 
 
 }
