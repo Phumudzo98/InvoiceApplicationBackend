@@ -3,6 +3,7 @@ package com.example.demo.Service;
 import com.example.demo.Model.*;
 
 import java.io.FileNotFoundException;
+import java.time.LocalDate;
 import java.util.List;
 
 public interface Interface {
@@ -18,6 +19,12 @@ public interface Interface {
     public List<Invoice> getAllInvoices(String email);
     public boolean updateUserDetails(User user);
     public List<Quote> getAllQuote(String email);
+    public void sendDoc(String to, String from,String path);
+
+    public void generateEmailPdf(String type, LocalDate localDate,
+                                 User user, double totalAmount, List<Items> items,
+                                 Client client, ClientAddress clientA) throws FileNotFoundException;
+
 
     }
 

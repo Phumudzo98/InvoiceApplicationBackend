@@ -17,15 +17,17 @@ import java.util.Collections;
 import java.util.List;
 
 @RestController
-
 public class Control implements ErrorController {
 
+    //Interact with backend methods
     @Autowired
     private Interface appService;
 
+    //For testing purpose only. Spring Security will be implemented
     private String email="phumu98@gmail.com";
 
 
+    //Register User/Admin
     @PostMapping("/register")
     public ResponseEntity<Boolean> register(@RequestBody User user)
     {
@@ -38,6 +40,7 @@ public class Control implements ErrorController {
         return ResponseEntity.badRequest().body(false);
     }
 
+    //login User/Admin
     @PostMapping("/login")
     public ResponseEntity<Boolean> login(@RequestParam String email, @RequestParam String password)
     {
@@ -52,6 +55,7 @@ public class Control implements ErrorController {
         }
     }
 
+    //Create invoice or quote document
     @PostMapping("/createInvoiceOrQuote")
     public ResponseEntity<Boolean> createInvoiceOrQuote(@RequestBody ClientAddressInvoiceQuoteItems caiqi) throws FileNotFoundException {
         boolean check = appService.createInvoiceOrQuote(email,caiqi);
@@ -64,6 +68,8 @@ public class Control implements ErrorController {
         }
 
     }
+
+    //search invoice. No front end for this one yet.
     @GetMapping("/searchInvoice")
     public ResponseEntity<Invoice> searchInvoice(@RequestParam int id)
     {
@@ -79,6 +85,7 @@ public class Control implements ErrorController {
                 }
     }
 
+    //Display 5 latest quotes on home page
     @GetMapping("/homeQuotes")
     public ResponseEntity<List<Quote>> display5QuoteOnHome()
     {
@@ -94,6 +101,8 @@ public class Control implements ErrorController {
         }
     }
 
+
+    //Display 5 latest invoices on home page
     @GetMapping("/homeInvoices")
     public ResponseEntity<List<Invoice>> display5InvoicesHome()
     {
@@ -110,7 +119,7 @@ public class Control implements ErrorController {
     }
 
 
-
+    //Button on home page for invoices
     @GetMapping("/displayAllInvoices")
     public ResponseEntity<List<Invoice>> getAllInvoice()
     {
