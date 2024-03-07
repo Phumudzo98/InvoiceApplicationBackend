@@ -28,7 +28,8 @@ public class BusinessInfo implements Serializable {
     public BusinessInfo() {
     }
 
-    public BusinessInfo(int id, String companyName, String streetNo, String streetName, String town, String city, int postalCode, User user) {
+    public BusinessInfo(int id, String companyName, String streetNo, String streetName, String town,
+                        String city, int postalCode, String email, String taxNo, User user) {
         this.id = id;
         this.companyName = companyName;
         this.streetNo = streetNo;
@@ -36,6 +37,8 @@ public class BusinessInfo implements Serializable {
         this.town = town;
         City = city;
         this.postalCode = postalCode;
+        this.email = email;
+        this.taxNo = taxNo;
         this.user = user;
     }
 
@@ -95,6 +98,21 @@ public class BusinessInfo implements Serializable {
         this.postalCode = postalCode;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getTaxNo() {
+        return taxNo;
+    }
+
+    public void setTaxNo(String taxNo) {
+        this.taxNo = taxNo;
+    }
 
     public User getUser() {
         return user;

@@ -8,12 +8,10 @@ import com.example.demo.Model.User;
 import com.example.demo.Service.Interface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.error.ErrorController;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.FileNotFoundException;
-import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -98,6 +96,12 @@ public class Control implements ErrorController {
         {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @GetMapping("/getTotalUnpaid")
+    public double totalAmountofInvoices()
+    {
+        return appService.invoiceTotalAmt(email);
     }
 
     //Display 5 latest quotes on home page

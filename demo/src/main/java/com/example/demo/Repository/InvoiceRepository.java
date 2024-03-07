@@ -20,5 +20,9 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Integer> {
 
     Boolean existsByInvoiceNo(int invoiceNo);
 
+    @Query("SELECT SUM(i.totalAmount) FROM Invoice i WHERE i.user.email = :userEmail AND i.paymentStatus = 'unpaid'")
+    Double getTotalUnpaidAmount(@Param("userEmail") String userEmail);
+
+
 
 }

@@ -157,10 +157,11 @@ public class Impl implements Interface {
 
     @Override
     @Transactional
-    public boolean createInvoiceOrQuote(String email, ClientAddressInvoiceQuoteItems caiqi) throws FileNotFoundException {
+    public boolean createInvoiceOrQuote(String email, ClientAddressInvoiceQuoteItems caiqi)
+            throws FileNotFoundException {
         //Desmond
 
-        //extract info from payload
+        //extract info from clientAddressInvoiceQuoteItems payload
         User user = userRepo.findByEmail(email);
         double total=0;
         Client client = caiqi.getClient();
@@ -179,6 +180,7 @@ public class Impl implements Interface {
 
             invoice.setUser(user);
             invoice.setDate(LocalDate.now());
+            invoice.setPaymentStatus("unpaid");
 
             List<Items> items = caiqi.getItems();
             for (Items item : items) {
@@ -206,7 +208,8 @@ public class Impl implements Interface {
                 itemRepo.save(item);
             }
 
-            generateEmailPdf(caiqi.getType(),invoice.getDate(),user,invoice.getTotalAmount(),items,client,clientAddress, randomNumber);
+            generateEmailPdf(caiqi.getType(),invoice.getDate(),user,invoice.getTotalAmount(),
+                    items,client,clientAddress, randomNumber);
 
             return true;
         }
@@ -243,67 +246,61 @@ public class Impl implements Interface {
                 item.setQuote(quote);
                 itemRepo.save(item);
             }
-            generateEmailPdf(caiqi.getType(),quote.getDate(),user,quote.getTotalAmount(),items,client,clientAddress,randomNumber);
+            generateEmailPdf(caiqi.getType(),quote.getDate(),user,quote.getTotalAmount(),
+                    items,client,clientAddress,randomNumber);
             return true;
         }
         return false;
     }
 
+
+    //retrieve all invoices
     @Override
     public List<Invoice> getAllInvoices(String email) {
 
-        try
-        {
+        try {
             return invoiceRepo.findByUserEmail(email);
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             return Collections.emptyList();
         }
     }
 
 
-
+    //retrieve all quotes
     public List<Quote> getAllQuote(String email)
     {
 
-        try
-        {
-
+        try {
             return quoteRepo.findByUserEmail(email);
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             return Collections.emptyList();
         }
     }
 
 
 
+    //search invoice
     @Override
     public Invoice searchInvoice(int number, String email) {
 
         User user = userRepo.findByEmail(email);
 
-        if(user!=null)
-        {
-            return invoiceRepo.findByInvoiceNoAndUser(number,user);
-        }
-        else {
+        if (user != null) {
+            return invoiceRepo.findByInvoiceNoAndUser(number, user);
+        } else {
             return null;
         }
 
     }
 
+    //search quote
     @Override
     public Quote searchQuote(int number, String email) {
         User user = userRepo.findByEmail(email);
 
-        if(user!=null)
-        {
-            return quoteRepo.findByQuoteNoAndUser(number,user);
-        }
-        else {
+        if (user != null) {
+            return quoteRepo.findByQuoteNoAndUser(number, user);
+        } else {
             return null;
         }
     }
@@ -351,7 +348,15 @@ public class Impl implements Interface {
         }
     }
 
-    public void generateEmailPdf(String type, LocalDate localDate, User user, double totalAmount, List<Items> items, Client client, ClientAddress clientA, int randomNo) throws FileNotFoundException {
+    @Override
+    public double invoiceTotalAmt(String email) {
+        return invoiceRepo.getTotalUnpaidAmount(email);
+    }
+
+    public void generateEmailPdf(String type, LocalDate localDate, User user,
+                                 double totalAmount, List<Items> items,
+                                 Client client, ClientAddress clientA,
+                                 int randomNo) throws FileNotFoundException {
         String path = "invoice.pdf";
         PdfWriter pdfWriter = new PdfWriter(path);
         PdfDocument pdfDocument = new PdfDocument(pdfWriter);

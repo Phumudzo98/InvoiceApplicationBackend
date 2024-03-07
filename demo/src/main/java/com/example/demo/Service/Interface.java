@@ -21,10 +21,13 @@ public interface Interface {
     public boolean updateUserDetails(User user);
     public List<Quote> getAllQuote(String email);
     public void sendDoc(String to, String from,String path, Client client, String type);
+    public double invoiceTotalAmt(String email);
+
 
     public void generateEmailPdf(String type, LocalDate localDate,
                                  User user, double totalAmount, List<Items> items,
-                                 Client client, ClientAddress clientA, int randomNo) throws FileNotFoundException;
+                                 Client client, ClientAddress clientA, int randomNo)
+                                 throws FileNotFoundException;
 
 
     }

@@ -20,6 +20,7 @@ public class Invoice implements Serializable {
     private double totalAmount;
     private LocalDate date;
     private int invoiceNo;
+    private String paymentStatus;
 
     @OneToMany(mappedBy = "invoice", cascade = CascadeType.ALL)
     @JsonIgnore
@@ -33,17 +34,26 @@ public class Invoice implements Serializable {
     public Invoice() {
     }
 
-    public Invoice(int invoiceId, double totalAmount, LocalDate date, int invoiceNo, List<com.example.demo.Model.Items> items, User user) {
+    public Invoice(int invoiceId, double totalAmount, LocalDate date, int invoiceNo, String paymentStatus, List<com.example.demo.Model.Items> items, User user) {
         this.invoiceId = invoiceId;
         this.totalAmount = totalAmount;
         this.date = date;
         this.invoiceNo = invoiceNo;
+        this.paymentStatus = paymentStatus;
         Items = items;
         this.user = user;
     }
 
     public int getInvoiceId() {
         return invoiceId;
+    }
+
+    public String isPaymentStatus() {
+        return paymentStatus;
+    }
+
+    public void setPaymentStatus(String paymentStatus) {
+        this.paymentStatus = paymentStatus;
     }
 
     public void setInvoiceId(int invoiceId) {
