@@ -20,4 +20,8 @@ public interface QuoteRepository extends JpaRepository<Quote, Integer> {
     List<Quote> findByUserEmail(String userEmail);
 
     List<Quote> findTop5ByUserOrderByDateDesc(User user);
+
+    boolean existsByQuoteNo(int quoteNo);
+
+    Quote findByQuoteNoAndUser(int quoteNo, User user);
 }

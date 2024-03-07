@@ -17,7 +17,7 @@ public class ClientAddress {
     private String city;
     private int postalCode;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name="client_id")
     @JsonIgnore
     private Client client;

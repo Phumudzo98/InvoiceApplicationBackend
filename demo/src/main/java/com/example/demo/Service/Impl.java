@@ -1,7 +1,6 @@
 package com.example.demo.Service;
 
 
-
 import com.example.demo.Model.*;
 import com.example.demo.Repository.*;
 import com.itextpdf.kernel.color.Color;
@@ -53,6 +52,9 @@ public class Impl implements Interface {
     private ClientRepository clientRepo;
     @Autowired
     private ClientAddressRepository clientAddressRepo;
+
+
+   //email settings
     @Autowired
     private MailSender mailSender;
     @Autowired
@@ -157,6 +159,8 @@ public class Impl implements Interface {
     @Transactional
     public boolean createInvoiceOrQuote(String email, ClientAddressInvoiceQuoteItems caiqi) throws FileNotFoundException {
         //Desmond
+
+        //extract info from payload
         User user = userRepo.findByEmail(email);
         double total=0;
         Client client = caiqi.getClient();
@@ -183,6 +187,18 @@ public class Impl implements Interface {
             }
 
             invoice.setTotalAmount(total);
+
+            //generate invoice no
+            Random random = new Random();
+            int randomNumber;
+
+            do {
+                randomNumber = random.nextInt(9000) + 1000;
+            } while (invoiceRepo.existsByInvoiceNo(randomNumber));
+
+            // Save the unique random number to the database
+
+            invoice.setInvoiceNo(randomNumber);
             invoiceRepo.save(invoice);
 
             for (Items item : items) {
@@ -190,7 +206,7 @@ public class Impl implements Interface {
                 itemRepo.save(item);
             }
 
-            generateEmailPdf(caiqi.getType(),invoice.getDate(),user,invoice.getTotalAmount(),items,client,clientAddress);
+            generateEmailPdf(caiqi.getType(),invoice.getDate(),user,invoice.getTotalAmount(),items,client,clientAddress, randomNumber);
 
             return true;
         }
@@ -208,13 +224,26 @@ public class Impl implements Interface {
             }
 
             quote.setTotalAmount(total);
+
+            //generate quote no
+            Random random = new Random();
+            int randomNumber;
+
+            do {
+                // Generate a random number between 1000 and 9999
+                randomNumber = random.nextInt(9000) + 1000;
+            } while (quoteRepo.existsByQuoteNo(randomNumber));
+
+            // Save the unique random number to the database
+
+            quote.setQuoteNo(randomNumber);
             quoteRepo.save(quote);
 
             for (Items item : items) {
                 item.setQuote(quote);
                 itemRepo.save(item);
             }
-            generateEmailPdf(caiqi.getType(),quote.getDate(),user,quote.getTotalAmount(),items,client,clientAddress);
+            generateEmailPdf(caiqi.getType(),quote.getDate(),user,quote.getTotalAmount(),items,client,clientAddress,randomNumber);
             return true;
         }
         return false;
@@ -252,18 +281,31 @@ public class Impl implements Interface {
 
 
     @Override
-    public Invoice searchInvoice(int id, String email) {
+    public Invoice searchInvoice(int number, String email) {
 
         User user = userRepo.findByEmail(email);
 
         if(user!=null)
         {
-            return invoiceRepo.findByInvoiceIdAndUser(id,user);
+            return invoiceRepo.findByInvoiceNoAndUser(number,user);
         }
         else {
             return null;
         }
 
+    }
+
+    @Override
+    public Quote searchQuote(int number, String email) {
+        User user = userRepo.findByEmail(email);
+
+        if(user!=null)
+        {
+            return quoteRepo.findByQuoteNoAndUser(number,user);
+        }
+        else {
+            return null;
+        }
     }
 
     @Override
@@ -284,7 +326,7 @@ public class Impl implements Interface {
         return false;
     }
 
-    public void sendDoc(String to, String from,String path)
+    public void sendDoc(String to, String from,String path, Client client, String type)
     {
         try {
             MimeMessage mimeMessage = jmSender.createMimeMessage();
@@ -293,8 +335,9 @@ public class Impl implements Interface {
             // Set basic email properties
             helper.setTo(to);
             helper.setFrom("phumu98@gmail.com");
-            helper.setSubject("i");
-            helper.setText("n", true); // Set to 'true' if using HTML in the body
+            helper.setSubject(type+" attachment");
+            helper.setText("Dear "+client.getF_name()+",\n\n Attached is your "+type+".\n" +
+                    "Thank your for your time.\n\nRegards\n", false); // Set to 'true' if using HTML in the body
 
             // Attach the file from the specified path
             FileSystemResource file = new FileSystemResource(new File(path));
@@ -308,7 +351,7 @@ public class Impl implements Interface {
         }
     }
 
-    public void generateEmailPdf(String type, LocalDate localDate, User user, double totalAmount, List<Items> items, Client client, ClientAddress clientA) throws FileNotFoundException {
+    public void generateEmailPdf(String type, LocalDate localDate, User user, double totalAmount, List<Items> items, Client client, ClientAddress clientA, int randomNo) throws FileNotFoundException {
         String path = "invoice.pdf";
         PdfWriter pdfWriter = new PdfWriter(path);
         PdfDocument pdfDocument = new PdfDocument(pdfWriter);
@@ -333,7 +376,7 @@ public class Impl implements Interface {
         table.addCell(new Cell().add(type).setFontSize(20f).setBorder(Border.NO_BORDER).setBold());
         Table nestedTable = new Table(new float[]{twocol/2, twocol/2});
         nestedTable.addCell(getHeaderTextCell(type+" No:"));
-        nestedTable.addCell(getHeaderTextCellValue(""));
+        nestedTable.addCell(getHeaderTextCellValue(String.valueOf(randomNo)));
         nestedTable.addCell(getHeaderTextCell("Issue date:"));
         nestedTable.addCell(getHeaderTextCellValue(dateString));
 
@@ -437,7 +480,7 @@ public class Impl implements Interface {
 
         document.close();
 
-        sendDoc(client.getEmail(), user.getEmail(), path);
+        sendDoc(client.getEmail(), user.getEmail(), path, client,type);
     }
 
     static Cell getHeaderTextCell (String textValue){

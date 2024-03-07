@@ -18,6 +18,8 @@ public class BusinessInfo implements Serializable {
     private String town;
     private String City;
     private int postalCode;
+    private String email;
+    private String taxNo;
 
     @OneToOne(fetch =FetchType.LAZY)
     @JoinColumn(name = "user_id")

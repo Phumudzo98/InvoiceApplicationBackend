@@ -71,9 +71,9 @@ public class Control implements ErrorController {
 
     //search invoice. No front end for this one yet.
     @GetMapping("/searchInvoice")
-    public ResponseEntity<Invoice> searchInvoice(@RequestParam int id)
+    public ResponseEntity<Invoice> searchInvoice(@RequestParam int number)
     {
-        Invoice invoice = appService.searchInvoice(id,email);
+        Invoice invoice = appService.searchInvoice(number,email);
 
                 if(invoice!=null)
                 {
@@ -83,6 +83,21 @@ public class Control implements ErrorController {
                 {
                     return ResponseEntity.notFound().build();
                 }
+    }
+
+    @GetMapping("/searchQuote")
+    public ResponseEntity<Quote> searchQuote(@RequestParam int number)
+    {
+        Quote quote = appService.searchQuote(number,email);
+
+        if(quote!=null)
+        {
+            return ResponseEntity.ok(quote);
+        }
+        else
+        {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     //Display 5 latest quotes on home page
