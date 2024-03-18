@@ -363,11 +363,13 @@ public class Impl implements Interface {
         User user = userRepo.findByEmail(email);
         Invoice invoice = invoiceRepo.findByInvoiceNoAndUser(invoiceNo,user);
         System.out.println("Testing");
-        System.out.print(user);
-        System.out.println(invoice);
+        System.out.print(user.getEmail());
+        System.out.println(invoice.getDate());
         System.out.println("Testing");
 
         invoice.setPaymentStatus("Paid");
+
+        invoiceRepo.save(invoice);
 
     }
 

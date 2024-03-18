@@ -48,9 +48,7 @@ public class Invoice implements Serializable {
         return invoiceId;
     }
 
-    public String isPaymentStatus() {
-        return paymentStatus;
-    }
+
 
     public void setPaymentStatus(String paymentStatus) {
         this.paymentStatus = paymentStatus;
