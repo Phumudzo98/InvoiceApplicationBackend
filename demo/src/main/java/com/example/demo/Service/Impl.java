@@ -337,8 +337,17 @@ public class Impl implements Interface {
             helper.setTo(to);
             helper.setFrom("phumu98@gmail.com");
             helper.setSubject(type+" attachment");
-            helper.setText("Dear "+client.getF_name()+",\n\nAttached is your "+type+".\n" +
-                    "A link is provided to complete the payment. "+link+" \nThank you for your time.\n\nKind Regards\n", false);
+
+            if(type.equals("Invoice")) {
+                helper.setText("Dear " + client.getF_name() + ",\n\nAttached is your " + type + ".\n" +
+                        "A link is provided to complete the payment. " + link + " \nThank you for your time.\n\nKind Regards\n", false);
+            }
+            else
+            {
+                helper.setText("Dear " + client.getF_name() + ",\n\nAttached is your " + type + ".\n" +
+                        "Thank you for your time.\n\nKind Regards\n", false);
+
+            }
 
             // Attach the file from the specified path
             FileSystemResource file = new FileSystemResource(new File(path));
@@ -362,11 +371,6 @@ public class Impl implements Interface {
 
         User user = userRepo.findByEmail(email);
         Invoice invoice = invoiceRepo.findByInvoiceNoAndUser(invoiceNo,user);
-        System.out.println("Testing");
-        System.out.print(user.getEmail());
-        System.out.println(invoice.getDate());
-        System.out.println("Testing");
-
         invoice.setPaymentStatus("Paid");
 
         invoiceRepo.save(invoice);
