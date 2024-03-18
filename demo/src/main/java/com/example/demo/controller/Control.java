@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -38,6 +39,15 @@ public class Control implements ErrorController {
         return ResponseEntity.badRequest().body(false);
     }
 
+    @GetMapping("/{email}/{invoiceNo}")
+    public void changeStatus(@PathVariable("email") String email,@PathVariable("invoiceNo") int invoiceNo)
+    {
+
+        appService.changeStatus(email,invoiceNo);
+
+
+    }
+
     //login User/Admin
     @PostMapping("/login")
     public ResponseEntity<Boolean> login(@RequestParam String email, @RequestParam String password)
@@ -55,7 +65,7 @@ public class Control implements ErrorController {
 
     //Create invoice or quote document
     @PostMapping("/createInvoiceOrQuote")
-    public ResponseEntity<Boolean> createInvoiceOrQuote(@RequestBody ClientAddressInvoiceQuoteItems caiqi) throws FileNotFoundException {
+    public ResponseEntity<Boolean> createInvoiceOrQuote(@RequestBody ClientAddressInvoiceQuoteItems caiqi) throws IOException {
         boolean check = appService.createInvoiceOrQuote(email,caiqi);
         if(check)
         {

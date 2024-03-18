@@ -1,6 +1,5 @@
 package com.example.demo.Service;
 
-
 import com.example.demo.Model.*;
 import com.example.demo.Repository.*;
 import com.itextpdf.kernel.color.Color;
@@ -28,6 +27,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -52,8 +52,12 @@ public class Impl implements Interface {
     private ClientRepository clientRepo;
     @Autowired
     private ClientAddressRepository clientAddressRepo;
+    @Autowired
+    private PayPalService ppService;
+    @Autowired
+    private Payfast payfast;
 
-
+    String link="";
    //email settings
     @Autowired
     private MailSender mailSender;
@@ -158,7 +162,7 @@ public class Impl implements Interface {
     @Override
     @Transactional
     public boolean createInvoiceOrQuote(String email, ClientAddressInvoiceQuoteItems caiqi)
-            throws FileNotFoundException {
+            throws IOException {
         //Desmond
 
         //extract info from clientAddressInvoiceQuoteItems payload
@@ -323,7 +327,7 @@ public class Impl implements Interface {
         return false;
     }
 
-    public void sendDoc(String to, String from,String path, Client client, String type)
+    public void sendDoc(String to, String from,String path, Client client, String type, String link)
     {
         try {
             MimeMessage mimeMessage = jmSender.createMimeMessage();
@@ -333,8 +337,8 @@ public class Impl implements Interface {
             helper.setTo(to);
             helper.setFrom("phumu98@gmail.com");
             helper.setSubject(type+" attachment");
-            helper.setText("Dear "+client.getF_name()+",\n\n Attached is your "+type+".\n" +
-                    "Thank your for your time.\n\nRegards\n", false); // Set to 'true' if using HTML in the body
+            helper.setText("Dear "+client.getF_name()+",\n\nAttached is your "+type+".\n" +
+                    "A link is provided to complete the payment. "+link+" \nThank you for your time.\n\nKind Regards\n", false);
 
             // Attach the file from the specified path
             FileSystemResource file = new FileSystemResource(new File(path));
@@ -353,10 +357,24 @@ public class Impl implements Interface {
         return invoiceRepo.getTotalUnpaidAmount(email);
     }
 
+    @Override
+    public void changeStatus(String email, int invoiceNo) {
+
+        User user = userRepo.findByEmail(email);
+        Invoice invoice = invoiceRepo.findByInvoiceNoAndUser(invoiceNo,user);
+        System.out.println("Testing");
+        System.out.print(user);
+        System.out.println(invoice);
+        System.out.println("Testing");
+
+        invoice.setPaymentStatus("Paid");
+
+    }
+
     public void generateEmailPdf(String type, LocalDate localDate, User user,
                                  double totalAmount, List<Items> items,
                                  Client client, ClientAddress clientA,
-                                 int randomNo) throws FileNotFoundException {
+                                 int randomNo) throws IOException {
         String path = "invoice.pdf";
         PdfWriter pdfWriter = new PdfWriter(path);
         PdfDocument pdfDocument = new PdfDocument(pdfWriter);
@@ -407,8 +425,6 @@ public class Impl implements Interface {
         twoColTable2.addCell(getCell10left("Mfactory", false));
         twoColTable2.addCell(getCell10left(client.getF_name()+" "+client.getL_name(), false));
 
-
-
         document.add(twoColTable2);
 
         Table twoColTable3 = new Table(twocolumnWidth);
@@ -443,8 +459,6 @@ public class Impl implements Interface {
         threeColTable1.addCell(new Cell().add("Price").setBold().setFontColor(Color.WHITE).setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER));
         document.add(threeColTable1);
 
-
-
         Table threeColTable2 = new Table(threeColumnWidth);
 
         float totalsum = (float) totalAmount;
@@ -476,7 +490,7 @@ public class Impl implements Interface {
         tb.addCell(new Cell().add("TERMS AND CONDITIONS\n").setBold().setBorder(Border.NO_BORDER));
         List<String>TncList = new ArrayList<>();
         TncList.add("1. The Seller shall bot be liable to the buyer directly or indirectly for any loss or damage suffered by the buyer");
-        TncList.add("1. The Seller warrants the products for one (1) year fromthe issued date");
+        TncList.add("1. The Seller warrants the products for one (1) year from the issued date");
 
         for (String tnc:TncList){
             tb.addCell(new Cell().add(tnc).setBorder(Border.NO_BORDER));
@@ -485,7 +499,11 @@ public class Impl implements Interface {
 
         document.close();
 
-        sendDoc(client.getEmail(), user.getEmail(), path, client,type);
+        if(type.equals("Invoice"))
+        {
+            link = payfast.initiatePayment(totalAmount, type, user.getEmail(),randomNo);
+        }
+        sendDoc(client.getEmail(), user.getEmail(), path, client,type, link);
     }
 
     static Cell getHeaderTextCell (String textValue){
