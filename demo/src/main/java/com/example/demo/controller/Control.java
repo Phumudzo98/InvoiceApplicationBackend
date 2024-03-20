@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.view.RedirectView;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -40,11 +41,12 @@ public class Control implements ErrorController {
     }
 
     @GetMapping("/{email}/{invoiceNo}")
-    public void changeStatus(@PathVariable("email") String email,@PathVariable("invoiceNo") int invoiceNo)
+    public RedirectView changeStatus(@PathVariable("email") String email, @PathVariable("invoiceNo") int invoiceNo)
     {
 
         appService.changeStatus(email,invoiceNo);
 
+        return new RedirectView("https://www.google.com");
 
     }
 
