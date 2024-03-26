@@ -43,6 +43,8 @@ public class Impl implements Interface {
     @Autowired
     private BusinessInfoRepository businessRepo;
     @Autowired
+    private PocketRepository pRepo;
+    @Autowired
     private InvoiceRepository invoiceRepo;
     @Autowired
     private ItemsRepository itemRepo;
@@ -67,13 +69,16 @@ public class Impl implements Interface {
 
     @Override
     @Transactional
-    public boolean registerUser(User user)
+    public boolean registerUser(RegisterDTO registerDTO)
     {
+        User user = registerDTO.getUser();
+
         Optional<User> check = userRepo.findById(user.getEmail());
+
 
         if(check.isEmpty())
         {
-            user.setEmail(user.getEmail());
+            //user.setEmail(user.getEmail());
             userRepo.save(user);
 
             SimpleMailMessage message = new SimpleMailMessage();
@@ -367,14 +372,27 @@ public class Impl implements Interface {
     }
 
     @Override
-    public void changeStatus(String email, int invoiceNo) {
+    public void changeStatus(String email, int invoiceNo, double newAmt) {
 
         User user = userRepo.findByEmail(email);
         Invoice invoice = invoiceRepo.findByInvoiceNoAndUser(invoiceNo,user);
         invoice.setPaymentStatus("Paid");
 
+        Pocket pocket = pRepo.findByUserEmail(email);
+        double oldAmt=pocket.getBalance();
+
+        pocket.setBalance(oldAmt+newAmt);
+
+        pRepo.save(pocket);
+
         invoiceRepo.save(invoice);
 
+    }
+
+    @Override
+    public double getBalance(String email) {
+
+        return pRepo.findBalanceByUserEmail(email);
     }
 
     public void generateEmailPdf(String type, LocalDate localDate, User user,
@@ -387,6 +405,8 @@ public class Impl implements Interface {
         pdfDocument.setDefaultPageSize(PageSize.A4);
         Document document = new Document(pdfDocument);
         //page spec end
+
+        BusinessInfo businessInfo = businessRepo.findByUser(user);
 
         //change LocalDate to String
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -428,7 +448,7 @@ public class Impl implements Interface {
         Table twoColTable2 = new Table(twocolumnWidth);
         twoColTable2.addCell(getCell10left("Company Name", true));
         twoColTable2.addCell(getCell10left("Name", true));
-        twoColTable2.addCell(getCell10left("Mfactory", false));
+        twoColTable2.addCell(getCell10left(businessInfo.getCompanyName(), false));
         twoColTable2.addCell(getCell10left(client.getF_name()+" "+client.getL_name(), false));
 
         document.add(twoColTable2);
@@ -436,7 +456,7 @@ public class Impl implements Interface {
         Table twoColTable3 = new Table(twocolumnWidth);
         twoColTable3.addCell(getCell10left("Company Number", true));
         twoColTable3.addCell(getCell10left("Address", true));
-        twoColTable3.addCell(getCell10left("U809010098", false));
+        twoColTable3.addCell(getCell10left(businessInfo.getTaxNo(), false));
         twoColTable3.addCell(getCell10left(String.valueOf(clientA.getStreetNo()+", "+clientA.getStreetName()+","+clientA.getTown()
                 +"\n"+clientA.getCity()+"\n"+String.valueOf(clientA.getPostalCode())), false));
         document.add(twoColTable3);
@@ -445,10 +465,10 @@ public class Impl implements Interface {
 
         Table oneColTable1=new Table(oneColumnwidth);
         oneColTable1.addCell(getCell10left("Company Address", true));
-        oneColTable1.addCell(getCell10left("132 Partridge Avenue, Allen Grove\n" +
-                "Kempton Park, Gauteng\n", false));
+        oneColTable1.addCell(getCell10left(businessInfo.getStreetNo()+" "+businessInfo.getStreetName()+", "+"\n" +
+                businessInfo.getTown()+", "+businessInfo.getCity()+"\n", false));
         oneColTable1.addCell(getCell10left("Email", true));
-        oneColTable1.addCell(getCell10left("help@mfactory.mobi", false));
+        oneColTable1.addCell(getCell10left(businessInfo.getEmail(), false));
         document.add(oneColTable1.setMarginBottom(10f));
 
         Table tableDivider2=new Table(fullwidth);
@@ -495,7 +515,7 @@ public class Impl implements Interface {
         Table tb = new Table(fullwidth);
         tb.addCell(new Cell().add("TERMS AND CONDITIONS\n").setBold().setBorder(Border.NO_BORDER));
         List<String>TncList = new ArrayList<>();
-        TncList.add("1. The Seller shall bot be liable to the buyer directly or indirectly for any loss or damage suffered by the buyer");
+        TncList.add("1. The Seller shall not be liable to the buyer directly or indirectly for any loss or damage suffered by the buyer");
         TncList.add("1. The Seller warrants the products for one (1) year from the issued date");
 
         for (String tnc:TncList){

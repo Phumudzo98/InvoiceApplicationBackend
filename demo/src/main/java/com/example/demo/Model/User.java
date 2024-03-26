@@ -22,6 +22,10 @@ public class User implements Serializable {
     @JsonIgnore
     private BusinessInfo businessInfo;
 
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private Pocket pocket;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Client> client;
@@ -38,12 +42,13 @@ public class User implements Serializable {
     public User() {
     }
 
-    public User(String email, String password, String f_name, String l_name, BusinessInfo businessInfo, List<Client> client, List<Invoice> invoices, List<Quote> quotes) {
+    public User(String email, String password, String f_name, String l_name, BusinessInfo businessInfo, Pocket pocket, List<Client> client, List<Invoice> invoices, List<Quote> quotes) {
         this.email = email;
         this.password = password;
         this.f_name = f_name;
         this.l_name = l_name;
         this.businessInfo = businessInfo;
+        this.pocket = pocket;
         this.client = client;
         this.invoices = invoices;
         this.quotes = quotes;
@@ -52,6 +57,7 @@ public class User implements Serializable {
     public String getEmail() {
         return email;
     }
+
 
     public void setEmail(String email) {
         this.email = email;
@@ -113,5 +119,13 @@ public class User implements Serializable {
 
     public void setQuotes(List<Quote> quotes) {
         this.quotes = quotes;
+    }
+
+    public Pocket getPocket() {
+        return pocket;
+    }
+
+    public void setPocket(Pocket pocket) {
+        this.pocket = pocket;
     }
 }

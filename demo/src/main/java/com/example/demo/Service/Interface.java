@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface Interface {
 
-    public boolean registerUser(User user);
+    public boolean registerUser(RegisterDTO registerDTO);
     public boolean loginApp(String email, String password);
     public boolean forgotPassword(String email);
     public boolean deleteInvoice(int id, String email);
@@ -23,7 +23,9 @@ public interface Interface {
     public List<Quote> getAllQuote(String email);
     public void sendDoc(String to, String from,String path, Client client, String type, String link);
     public double invoiceTotalAmt(String email);
-    public void changeStatus(String email, int invoiceNo);
+    public void changeStatus(String email, int invoiceNo, double newAmt);
+
+    public double getBalance(String email);
 
 
     public void generateEmailPdf(String type, LocalDate localDate,

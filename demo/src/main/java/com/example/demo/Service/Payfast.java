@@ -35,7 +35,7 @@ public class Payfast {
         params.add(new BasicNameValuePair("merchant_key", MERCHANT_KEY));
         params.add(new BasicNameValuePair("amount", String.valueOf(amount)));
         params.add(new BasicNameValuePair("item_name", description));
-        params.add(new BasicNameValuePair("return_url", PAYMENT_SUCCESS_URL+email+"/"+randomNo));
+        params.add(new BasicNameValuePair("return_url", PAYMENT_SUCCESS_URL+email+"/"+randomNo+"/"+amount));
         post.setEntity(new UrlEncodedFormEntity(params));
 
         HttpClient client = HttpClientBuilder.create().build();

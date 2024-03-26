@@ -1,10 +1,9 @@
 package com.example.demo.controller;
 
 
-import com.example.demo.Model.ClientAddressInvoiceQuoteItems;
-import com.example.demo.Model.Invoice;
-import com.example.demo.Model.Quote;
-import com.example.demo.Model.User;
+import com.example.demo.Model.*;
+import com.example.demo.Repository.BusinessInfoRepository;
+import com.example.demo.Repository.PocketRepository;
 import com.example.demo.Service.Interface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.error.ErrorController;
@@ -12,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 
@@ -22,29 +20,45 @@ public class Control implements ErrorController {
     //Interact with backend methods
     @Autowired
     private Interface appService;
+    @Autowired
+    private BusinessInfoRepository businessRepo;
+    @Autowired
+    private PocketRepository pRepo;
 
     //For testing purpose only. Spring Security will be implemented
-    private String email="phumu98@gmail.com";
+    private String email="tuv@gmail.com";
 
 
     //Register User/Admin
     @PostMapping("/register")
-    public ResponseEntity<Boolean> register(@RequestBody User user)
+    public ResponseEntity<Boolean> register(@RequestBody RegisterDTO registerDTO)
     {
-        boolean result = appService.registerUser(user);
+        boolean result = appService.registerUser(registerDTO);
 
         if(result)
         {
+            User user = registerDTO.getUser();
+            Pocket pocket= new Pocket();
+            pocket.setBalance(0);
+            pocket.setUser(user);
+            pRepo.save(pocket);
+
+            BusinessInfo businessInfo=registerDTO.getBusinessInfo();
+
+            businessInfo.setUser(user);
+            businessRepo.save(businessInfo);
+
             return ResponseEntity.ok(true);
+
         }
         return ResponseEntity.badRequest().body(false);
     }
 
-    @GetMapping("/{email}/{invoiceNo}")
-    public RedirectView changeStatus(@PathVariable("email") String email, @PathVariable("invoiceNo") int invoiceNo)
+    @GetMapping("/{email}/{invoiceNo}/{amount}")
+    public RedirectView changeStatus(@PathVariable("email") String email, @PathVariable("invoiceNo") int invoiceNo,@PathVariable("amount") double amount)
     {
 
-        appService.changeStatus(email,invoiceNo);
+        appService.changeStatus(email,invoiceNo,amount);
 
         return new RedirectView("https://www.google.com");
 
@@ -63,6 +77,11 @@ public class Control implements ErrorController {
         {
             return ResponseEntity.badRequest().body(false);
         }
+    }
+    @GetMapping("/getBalance")
+    public ResponseEntity<Double> getBalance()
+    {
+        return ResponseEntity.ok(appService.getBalance(email));
     }
 
     //Create invoice or quote document
