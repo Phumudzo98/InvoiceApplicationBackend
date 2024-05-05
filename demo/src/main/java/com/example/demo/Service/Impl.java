@@ -168,7 +168,6 @@ public class Impl implements Interface {
     @Transactional
     public boolean createInvoiceOrQuote(String email, ClientAddressInvoiceQuoteItems caiqi)
             throws IOException {
-        //Desmond
 
         //extract info from clientAddressInvoiceQuoteItems payload
         User user = userRepo.findByEmail(email);
@@ -351,7 +350,6 @@ public class Impl implements Interface {
             {
                 helper.setText("Dear " + client.getF_name() + ",\n\nAttached is your " + type + ".\n" +
                         "Thank you for your time.\n\nKind Regards\n", false);
-
             }
 
             // Attach the file from the specified path
@@ -384,7 +382,6 @@ public class Impl implements Interface {
         pocket.setBalance(oldAmt+newAmt);
 
         pRepo.save(pocket);
-
         invoiceRepo.save(invoice);
 
     }
